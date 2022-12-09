@@ -1,0 +1,72 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  # Create an S3 bucket for storing processed log data
+  LogDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: log-data-bucket
+      AccessControl: Private
+
+  # Create a Kinesis stream for ingesting log data
+  LogDataStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: log-data-stream
+      ShardCount: 1
+
+  # Create an SQS queue for triggering the processing Lambda function
+  LogDataQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: log-data-queue
+
+  # Create a Lambda function for processing log data
+  ProcessLogData:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: process-log-data
+      Role: arn:aws:iam::xxxxxx:role/lambda-execution-role
+      Handler: index.handler
+      Runtime: python3.7
+      Code:
+        ZipFile: |
+          import json
+          
+          def handler(event, context):
+            # Parse and process the log data from the event
+            # ...
+            
+            # Store the processed log data in the S3 bucket
+            # ...
+            
+            # Send a notification using the SNS topic
+            # ...
+            
+            return {
+              "statusCode": 200,
+              "body": json.dumps("Log data processed and stored successfully")
+            }
+
+  # Create an SNS topic for sending notifications
+  LogDataNotifications:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: log-data-notifications
+
+  # Subscribe the Lambda function to the SNS topic
+  ProcessLogDataTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref LogDataNotifications
+      Protocol: lambda
+      Endpoint: !GetAtt ProcessLogData.Arn
+
+  # Set up the Lambda function to be triggered by the SQS queue
+  ProcessLogDataEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt LogDataQueue.Arn
+      FunctionName: !Ref ProcessLogData
+      BatchSize: 1

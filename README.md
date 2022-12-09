@@ -4,11 +4,22 @@
 
 This project involves a data pipeline that ingests log data from a web server that generates data for forex exchange rates, stock prices, and a stock news feed. The pipeline will process the data and store it in an S3 bucket for analysis. The pipeline will use Kinesis for data ingestion, SQS for data processing, S3 for data storage, SNS for notifications, and Lambda functions to implement the various processing steps.  
 
-1. [High Level Design](#High-Level-Steps)
-2. [Webserver Delivery Plan](#WEBSERVER-DESIGN-PLAN)
-3. [Resiliency and Redundancy](#RESILIENCY-AND-REDUNDANCY)
 
+## TABLE OF CONTENTS 
 
+- [High-Level Steps](#high-level-steps)
+- [Pipeline](#pipeline)
+- [Acceptance Criteria](#acceptance-criteria)
+- [Deliverables](#deliverables)
+- [Architectural Components](#architectural-components)
+- [Web Server Design Plan](#web-server-design-plan)
+- [Infrastructure](#infrastructure)
+  - [data_pipeline.tf](#data_pipelinetf)
+  - [data_pipeline.yml](#data_pipelineyml)
+- [Resiliency and Redundancy](#resiliency-and-redundancy)
+- [Infrastructure](#Infrastructure)
+    -[terraform code](#data_pipeline.tf)
+    -[Cloudformation code](#data_pipeline.yml)
 
 ## High-Level Steps
 
@@ -100,10 +111,11 @@ Regardless of the approach you choose, it is important to ensure that the genera
 
 # WEB SERVER CONSIDERATIONS 
 
-Performance: The web server should be able to handle a high volume of requests and deliver the data quickly and efficiently. This may require optimizing the implementation of the server, using caching or other techniques to reduce the amount of time required to generate and serve the data.
-Reliability: The web server should be able to withstand failures and continue serving data even in the face of unexpected errors or downtime. This may require implementing redundancy and backup mechanisms, such as load balancing or backup servers, to ensure that the server remains available even if individual components fail.
-Security: The web server should be secure, protecting the data it serves and preventing unauthorized access or modifications. This may require implementing authentication and authorization mechanisms, as well as encryption and other security measures to protect the data from being accessed or tampered with.
-Scalability: The web server should be able to scale up or down as needed to accommodate changes in the volume or type of requests it receives. This may require implementing mechanisms to automatically adjust the number of servers or other resources used by the server, or to add or remove servers as needed to ensure that the server can continue serving data effectively.
+- Performance: The web server should be able to handle a high volume of requests and deliver the data quickly and efficiently. This may require optimizing the implementation of the server, using caching or other techniques to reduce the amount of time required to generate and serve the data.
+- Reliability: The web server should be able to withstand failures and continue serving data even in the face of unexpected errors or downtime. This may require implementing - - - - - redundancy and backup mechanisms, such as load balancing or backup servers, to ensure that the server remains available even if individual components fail.
+- Security: The web server should be secure, protecting the data it serves and preventing unauthorized access or modifications. This may require implementing authentication and - authorization mechanisms, as well as encryption and other security measures to protect the data from being accessed or tampered with.
+- Scalability: The web server should be able to scale up or down as needed to accommodate changes in the volume or type of requests it receives. This may require implementing mechanisms to automatically adjust the number of servers or other resources used by the server, or to add or remove servers as needed to ensure that the server can continue serving data effectively.
+  
 By taking these factors into account and implementing the web server in a way that addresses these concerns, you can ensure that the server is able to deliver the data efficiently, reliably, and securely.
 
 
@@ -193,4 +205,22 @@ To monitor the health of the server and ensure that it does not fall over, you c
 
 For example, you could use CloudWatch to monitor the CPU and memory usage of the web server, and to set an alarm that will trigger if the server becomes overloaded or unresponsive. You could also use CloudWatch to monitor the availability of the RDS instance, and to set an alarm that will trigger if the instance becomes unavailable or encounters any other problems.
 
-Overall, by writing the webserver log data to an RDS instance and using CloudWatch to monitor the health of the server, you can ensure that the server is able to deliver data reliably and efficiently, and that you are alerted if any problems are detected.
+Overall, by writing the webserver log data to an RDS instance and using CloudWatch to monitor the health of the server, you can ensure that the server is able to deliver data reliably and efficiently, and that you are alerted if any problems are detected.  
+
+
+
+# Infrastructure
+
+## data_pipeline.tf
+
+This code sets up the necessary infrastructure to implement the data pipeline, including an S3 bucket for storing the processed log data, a Kinesis stream for ingesting the log data, an SQS queue for triggering the Lambda function that processes the log data, and an SNS topic for sending notifications. The Lambda function is also configured to be triggered by the SQS queue when new data is available.
+
+To test the pipeline, you can use the aws_kinesis_put_record Terraform resource to send sample log data to the Kinesis stream, and verify that the data is processed and stored in the S3 bucket. You can also use the aws_sns_topic_subscription resource to subscribe to the SNS notifications and verify that you receive notifications when new data is processed and stored in the S3 bucket.  
+
+
+## data_pipeline.yml
+
+
+This CloudFormation template defines all the necessary resources to implement the data pipeline, including the S3 bucket, Kinesis stream, SQS queue, Lambda function, and SNS topic. It also configures the Lambda function to be triggered by the SQS queue and subscribed to the SNS topic.
+
+To test the pipeline using this CloudFormation template, you can use the aws_cloudformation_stack Terraform resource to create the stack and deploy the resources, and then use the aws_kinesis_put_record resource to send sample log data to the Kinesis stream. You can also use the aws_sns_topic_subscription resource to subscribe to the SNS notifications and verify that you receive notifications when new data is processed and stored in the S3 bucket.
