@@ -1,9 +1,0 @@
-Updating the original plan to include writing webserver log data to an RDS instance is a good idea, as it will provide a persistent and structured store for the log data. This can be useful for a variety of purposes, such as analyzing the data to understand usage patterns or trends, or for auditing or compliance purposes.
-
-To implement this change, you could modify the web server to write the log data to an RDS instance whenever a request is received. The log data could include a timestamp for each request, along with any other relevant information, such as the client IP address, the URL of the request, and the response status code.
-
-To monitor the health of the server and ensure that it does not fall over, you could use Amazon CloudWatch. CloudWatch is a monitoring service that allows you to track a variety of metrics and logs for your AWS resources, including EC2 instances and RDS databases. You can use CloudWatch to monitor the performance and availability of the web server and RDS instance, and to set alarms that will notify you if any problems are detected.
-
-For example, you could use CloudWatch to monitor the CPU and memory usage of the web server, and to set an alarm that will trigger if the server becomes overloaded or unresponsive. You could also use CloudWatch to monitor the availability of the RDS instance, and to set an alarm that will trigger if the instance becomes unavailable or encounters any other problems.
-
-Overall, by writing the webserver log data to an RDS instance and using CloudWatch to monitor the health of the server, you can ensure that the server is able to deliver data reliably and efficiently, and that you are alerted if any problems are detected.
