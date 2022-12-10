@@ -1,6 +1,6 @@
 # Project Description 
 
-![Generic finance image](http://pipelinefinancialservices.com/wp-content/uploads/2012/05/Factoring-Benefits.jpg)    
+![Generic finance image](E2E.jpeg)    
 
 This project involves a data pipeline that ingests log data from a web server that generates data for forex exchange rates, stock prices, and a stock news feed. The pipeline will process the data and store it in an S3 bucket for analysis. The pipeline will use Kinesis for data ingestion, SQS for data processing, S3 for data storage, SNS for notifications, and Lambda functions to implement the various processing steps.  
 
